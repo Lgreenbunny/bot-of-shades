@@ -32,35 +32,42 @@
 
 package myfirstbot;
 import java.util.ArrayList;
+//import org.json.simple.JSONObject;
+import javax.json.Json;
+import javax.json.JsonReader;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader; 
 import java.util.Collection;
 
-/*IF YOU UPLOAD TO GITHUB, TAKE OUT THE TOKEN PLZ.
- * Z
- * Z
- * Z
- * Z
- * Z
- * */
 import org.javacord.api.DiscordApi;
 import org.javacord.api.DiscordApiBuilder;
 import org.javacord.api.entity.channel.Channel;
 
 //make messages
 import org.javacord.api.entity.message.MessageBuilder;
+
+
 //import org.javacord.api.util.logging.FallbackLoggerConfiguration;
 public class MainHub {
-	public static void main(String[] args) {
-		// test from https://javacord.org/wiki/getting-started/eclipse-maven/
-		
+	public static void main(String[] args) throws FileNotFoundException {
 		//FallbackLoggerConfiguration.setTrace(true); //does logging things
 
-		//never show the token to anyone
-		//never show the token to anyone
-		//never show the token to anyone
-		DiscordApi api = new DiscordApiBuilder().setToken("no").login().join();
-		//never show the token to anyone
-		//never show the token to anyone
-		//never show the token to anyone
+		//old: DiscordApi api = new DiscordApiBuilder().setToken("no").login().join();
+		
+		//get file to read from
+		FileReader fly = new FileReader("./src/main/java/myfirstbot/config.json");
+		//change reader type to json
+		JsonReader jread = Json.createReader(fly);
+		//grab information from reader
+		DiscordApi api = new DiscordApiBuilder()
+				.setToken(jread.readObject().getString("token"))
+				.login().join();
+		
+		//close readerS
+		
+		
 		System.out.println("Logged in!");
 		
 		try {
