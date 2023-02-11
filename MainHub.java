@@ -52,12 +52,13 @@ import org.javacord.api.entity.message.MessageBuilder;
 //import org.javacord.api.util.logging.FallbackLoggerConfiguration;
 public class MainHub {
 	public static void main(String[] args) throws FileNotFoundException {
+		
 		//FallbackLoggerConfiguration.setTrace(true); //does logging things
 
 		//old: DiscordApi api = new DiscordApiBuilder().setToken("no").login().join();
 		
 		//get file to read from
-		FileReader fly = new FileReader("./src/main/java/myfirstbot/config.json");
+		FileReader fly = new FileReader("./aResource/config.json");
 		//change reader type to json
 		JsonReader jread = Json.createReader(fly);
 		//grab information from reader
@@ -87,7 +88,7 @@ public class MainHub {
 private static ArrayList<Channel> start(DiscordApi api){
 	//talk at first
 	MessageBuilder speech = new MessageBuilder();
-	speech.append("e");
+	speech.append("on?");
 	
 	//get a channel by name, general atm
 	//do you have to convert from collection to arraylist each time?
