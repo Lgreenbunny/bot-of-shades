@@ -20,12 +20,15 @@ public class PingedBehavior implements MessageCreateListener{
 		general = listOfChannels.get(0);
 		actualBotUser = me;
 		//get your mention tag to check if someone mentioned you
-		pre = "=";
+		pre = "!!";
 		
 	}
 	
-	//when a message is created
+	//when a message is created, this function's used to handle the message event
+	@Override
 	public void onMessageCreate(MessageCreateEvent event) {
+		System.out.println("saw message");
+
 		//MessageBuilder speech = new MessageBuilder();
 		//this will still make it print: System.out.println(event.getMessageContent());
 		//has multiple examples https://github.com/Javacord/Javacord
@@ -51,7 +54,7 @@ public class PingedBehavior implements MessageCreateListener{
 		get the message and see if it pings the bot, or make a handler for a ping instead
 		also when it's pinged, respond with the prefix and a message
 		*/
-		if(content.matches("<@!(" + actualBotUser.getId() + ")>+")) 
+		if(content.matches("<@!(" + actualBotUser.getId() + ")>.+")) 
 			event.getChannel().sendMessage("y ping tho? smh");
 		
 		if(content.matches(pre+"((command)(s){0,1})|help")) {
