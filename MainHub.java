@@ -44,25 +44,28 @@ import java.util.Collection;
 import org.javacord.api.DiscordApi;
 import org.javacord.api.DiscordApiBuilder;
 import org.javacord.api.entity.channel.Channel;
-
+import org.javacord.api.entity.intent.Intent;
 //make messages
 import org.javacord.api.entity.message.MessageBuilder;
+import org.javacord.api.util.logging.FallbackLoggerConfiguration;
 
 
 //import org.javacord.api.util.logging.FallbackLoggerConfiguration;
 public class MainHub {
 	public static void main(String[] args) throws FileNotFoundException {
-		//FallbackLoggerConfiguration.setTrace(true); //does logging things
+		
+		FallbackLoggerConfiguration.setDebug(true); //does logging things
 
 		//old: DiscordApi api = new DiscordApiBuilder().setToken("no").login().join();
 		
 		//get file to read from
-		FileReader fly = new FileReader("./src/main/java/myfirstbot/config.json");
+		FileReader fly = new FileReader("./aResource/config.json");
 		//change reader type to json
 		JsonReader jread = Json.createReader(fly);
 		//grab information from reader
 		DiscordApi api = new DiscordApiBuilder()
 				.setToken(jread.readObject().getString("token"))
+				.setIntents(Intent.MESSAGE_CONTENT, Intent.GUILDS, Intent.GUILD_MEMBERS, Intent.GUILD_MESSAGES)
 				.login().join();
 		
 		//close readerS
@@ -74,20 +77,22 @@ public class MainHub {
 			/*starts the api, may be outdated, try .login().join() with discordapi? the bot still appears, tho
 			 * https://javacord.org/wiki/getting-started/writing-your-first-bot.html#log-the-bot-in
 			*/
-		ArrayList<Channel> listOfChannels = start(api);
-		
-		//listens for pings to the bot in selected channels
-		api.addMessageCreateListener(new PingedBehavior(listOfChannels, api.getYourself()));
-		} catch(Exception e){
-			System.out.printf("List of channels/pinged behavior broke in main:\n%s", e);
-		}
+			ArrayList<Channel> listOfChannels = start(api);
+
+			//listens for messages and responds a certain way if needed
+			CommandBehavior messageReading = new CommandBehavior(listOfChannels, api.getYourself());
+			api.addMessageCreateListener(event ->{
+				messageReading.onMessageCreate(event);});
+			} catch(Exception e){
+				System.out.printf("List of channels/command behavior broke in main:\n%s", e);
+			}
 	}
 	
 	//messageBuilder can make messages, Messageable can receive messages...
 private static ArrayList<Channel> start(DiscordApi api){
 	//talk at first
 	MessageBuilder speech = new MessageBuilder();
-	speech.append("e");
+	speech.append("on?");
 	
 	//get a channel by name, general atm
 	//do you have to convert from collection to arraylist each time?
