@@ -80,11 +80,11 @@ public class MainHub {
 			ArrayList<Channel> listOfChannels = start(api);
 
 			//listens for messages and responds a certain way if needed
-			PingedBehavior messageReading = new PingedBehavior(listOfChannels, api.getYourself());
+			CommandBehavior messageReading = new CommandBehavior(listOfChannels, api.getYourself());
 			api.addMessageCreateListener(event ->{
 				messageReading.onMessageCreate(event);});
 			} catch(Exception e){
-				System.out.printf("List of channels/pinged behavior broke in main:\n%s", e);
+				System.out.printf("List of channels/command behavior broke in main:\n%s", e);
 			}
 	}
 	

@@ -9,13 +9,13 @@ import org.javacord.api.entity.user.User;
 import org.javacord.api.event.message.MessageCreateEvent;
 import org.javacord.api.listener.message.MessageCreateListener;
 
-public class PingedBehavior implements MessageCreateListener{
+public class CommandBehavior implements MessageCreateListener{
 	ArrayList<Channel> listOfChannels;
 	Channel general;
 	User actualBotUser;
 	DiscordApi api;
 	String pre;
-	PingedBehavior(ArrayList<Channel> list, User me){
+	CommandBehavior(ArrayList<Channel> list, User me){
 		listOfChannels = list;
 		general = listOfChannels.get(0);
 		actualBotUser = me;
