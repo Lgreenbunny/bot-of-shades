@@ -8,6 +8,7 @@ import org.javacord.api.entity.message.MessageBuilder;
 import org.javacord.api.entity.user.User;
 import org.javacord.api.event.message.MessageCreateEvent;
 import org.javacord.api.listener.message.MessageCreateListener;
+import org.javacord.api.entity.message.MessageAuthor;
 
 public class CommandBehavior implements MessageCreateListener{
 	ArrayList<Channel> listOfChannels;
@@ -15,12 +16,18 @@ public class CommandBehavior implements MessageCreateListener{
 	User actualBotUser;
 	DiscordApi api;
 	String pre;
+	ReactionList reactions;
 	CommandBehavior(ArrayList<Channel> list, User me){
 		listOfChannels = list;
 		general = listOfChannels.get(0);
 		actualBotUser = me;
 		//get your mention tag to check if someone mentioned you
 		pre = "!!";
+
+		reactions = new ReactionList(
+			list.get(0).asServerChannel()
+			.orElse(null).getServer()
+		);
 		
 	}
 	
@@ -64,5 +71,10 @@ public class CommandBehavior implements MessageCreateListener{
 			+pre+"startMurders` (:\n"
 			+pre+"help/command[s]`- this message");
 		}
+
+		if(content.matches(pre + "auction(\\s)*")){
+			reactions.eventListReacts(event);
+		}
+		
 	}
 }
