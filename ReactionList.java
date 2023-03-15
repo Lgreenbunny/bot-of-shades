@@ -65,21 +65,27 @@ public class ReactionList {
             temp =  member.asUser().orElse(null);
         }
         else{
-            //message here
+            BotSpeak.plainSpeak(event, "Server wasn't found??");
 
         }
         if(temp != null){
             if(auctionRole.hasUser(temp)){
                 auctionRole.removeUser(temp);
-                //status message here
+                BotSpeak.plainSpeak(event, 
+                    "Removed auction role from " 
+                    + temp.getNickname(serv).orElse("[someone]"
+                    + "."));
             }
             else{
                 auctionRole.addUser(temp);
-                //status message here
+                BotSpeak.plainSpeak(event, 
+                    "Added auction role to " 
+                    + temp.getNickname(serv).orElse("[someone]"
+                    + "."));
             }
         }
         else{
-            //message here
+            BotSpeak.plainSpeak(event, "Member wasn't found??");
 
         }
     }
