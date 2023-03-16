@@ -18,6 +18,10 @@ final class BotSpeak {
     }
     
     //puts a whole list of text in a message, sometimes with formatting
-    static public void listSpeak(TextChannel channel, MessageBuilder build, String type, String text){
+    static public void listSpeak(TextChannel channel, MessageBuilder build, String prefix, String[] text){
+        for(int i = 0; i+1 < text.length; i+=2){ //uses 2 indexes at a time
+            build.append(String.format("`%s%s` - %s\n", 
+                prefix, text[i], text[i+1]));
+        }
     }
 }
