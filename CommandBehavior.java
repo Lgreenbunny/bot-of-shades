@@ -44,16 +44,22 @@ public class CommandBehavior implements MessageCreateListener{
 	@Override
 	public void onMessageCreate(MessageCreateEvent event) {
 		System.out.println("saw message");
-
+		
 		//MessageBuilder speech = new MessageBuilder();
 		//this will still make it print: System.out.println(event.getMessageContent());
 		//has multiple examples https://github.com/Javacord/Javacord
 		String content = event.getMessageContent(); 
-		if(content.length() > 2 && content.substring(0, pre.length()).matches(".*" + pre + ".*")){
+
+		if(content.length() > 2 && 
+			content.substring(0, pre.length()).matches(".*" + pre + ".*")){
+
 			User commandUser = event.getMessageAuthor().asUser().get();
 			TextChannel channel = event.getChannel();
+			String comCheck = content.substring(
+				Math.min(content.length(), pre.length()), 
+				Math.min(20, content.length()));
 
-			if(content.matches(pre+"copy .*")) { //copy command, repeats your message
+			if(comCheck.matches("copy .*")) { //copy command, repeats your message
 				String cut = content.replace(pre+"copy ", "");
 				builder.appendCode("java", cut);
 				builder.append("\t~" + commandUser.getName());
@@ -63,7 +69,7 @@ public class CommandBehavior implements MessageCreateListener{
 				builder.setContent("");
 			}
 			
-			if(content.equalsIgnoreCase(pre+"ping")) { 
+			if(comCheck.equalsIgnoreCase("ping")) { //potentially reword this
 				channel.sendMessage("received ping at " +
 				event.getMessage().getCreationTimestamp()+
 				" probably");
@@ -76,7 +82,7 @@ public class CommandBehavior implements MessageCreateListener{
 			if(content.matches("<@!(" + actualBotUser.getId() + ")>.+")) 
 				channel.sendMessage("y ping tho? smh");
 			
-			if(content.matches(pre+"(command|help)(s)*")) {
+			if(comCheck.matches("(command|help)(s)*")) {
 				builder.appendCode("","help menu");
 				BotSpeak.listSpeak(channel, builder, pre, commands);
 				builder.send(channel);
@@ -84,8 +90,8 @@ public class CommandBehavior implements MessageCreateListener{
 				//builder.removeContent();
 			}
 
-			if(content.matches(pre + "auction(\\s)*")){
-				reactions.eventListReacts(event);
+			if(comCheck.matches("giveaway(\\s)*")){
+				reactions.eventListReacts(event, comCheck);
 			}
 		}
 	}
