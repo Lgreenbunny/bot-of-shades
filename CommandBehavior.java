@@ -29,7 +29,8 @@ public class CommandBehavior implements MessageCreateListener{
 
 		commands = new String[]{"ping", "ping response for the packets and the thign",
 		"copy [message]", "repeats your message... maybe",
-		"auction", "lets you get notified for auctions of some type :thonk:",
+		"giveaway", "lets you get notified for auctions of some type :thonk:",
+		"incense", "lets you do incenses in that one channel without needing mod/admin",
 		"startMurders", "(:",
 		"help/command[s]", "shows this whole message again"};
 		
@@ -90,9 +91,8 @@ public class CommandBehavior implements MessageCreateListener{
 				//builder.removeContent();
 			}
 
-			if(comCheck.matches("giveaway(\\s)*")){
-				reactions.eventListReacts(event, comCheck);
-			}
+			//check the other commands in ReactionList
+			reactions.eventListReacts(event, comCheck);
 		}
 	}
 }

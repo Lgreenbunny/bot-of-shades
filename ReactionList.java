@@ -20,7 +20,7 @@ public class ReactionList{
      * ReactRole objects related to the message id AND reaction are found
      * based on the click/unclick, it adds/removes the role from the user    
      */
-    protected RoleObject giveawayRole;
+    protected RoleObject giveawayRole, incenseRole;
     protected Server serv;
     //curent role's this bot can manage: Giveaway pkmn (pingable), Incense
     ReactionList(Server serv){
@@ -36,6 +36,8 @@ public class ReactionList{
          */
         giveawayRole = new RoleObject((serv.getRolesByNameIgnoreCase("giveaway pkmn")).get(0),
             "giveaway");
+        incenseRole = new RoleObject((serv.getRolesByNameIgnoreCase("incense")).get(0),
+            "incense");
     }
     
 
@@ -65,6 +67,7 @@ public class ReactionList{
         
         //check role
         //if the Optional turns out to be null instead of an event, returns a null 
+
         User temp = null;
         if(serv != null){
             temp =  member.asUser().orElse(null);
@@ -73,22 +76,16 @@ public class ReactionList{
             BotSpeak.plainSpeak(event, "Server wasn't found??");
 
         }
+
+        //command check and method calls here
         if(temp != null){
-            //command check and method calls here
-            if(giveawayRole.theRole.hasUser(temp)){
-                giveawayRole.theRole.removeUser(temp);
-                BotSpeak.plainSpeak(event, 
-                    "Removed giveaway role from " 
-                    + temp.getNickname(serv).orElse("[someone]"
-                    + "."));
-            }
-            else{
-                giveawayRole.theRole.addUser(temp);
-                BotSpeak.plainSpeak(event, 
-                    "Added giveaway role to " 
-                    + temp.getNickname(serv).orElse("[someone]"
-                    + "."));
-            }
+            /*later on, this should use an array of RoleObjects and use the one that matches 
+            CommandCheck*/
+            if(commandCheck.matches(String.format(".*%s.*", giveawayRole.command)))
+                plainRoleCommand(giveawayRole, commandCheck, temp, event);
+                
+            else if(commandCheck.matches(String.format(".*%s.*", incenseRole.command)))
+                plainRoleCommand(incenseRole, commandCheck, temp, event);
         }
         else{
             BotSpeak.plainSpeak(event, "Member wasn't found??");
@@ -97,6 +94,31 @@ public class ReactionList{
     }
      
 
+    //handle plain text commands after looking for the text
+    private void plainRoleCommand(RoleObject roleObj, String commandCheck, User temp, MessageCreateEvent event){
+        //find a role that matches the command (through an arraylist of roles soon)
+        
+
+        //add or remove that role
+        if(roleObj.theRole.hasUser(temp)){
+            roleObj.theRole.removeUser(temp);
+            BotSpeak.plainSpeak(event, 
+                String.format("Removed %s role from %s.", 
+                    roleObj.command,
+                    temp.getNickname(serv).orElse("[someone]")));
+        }
+        else{
+            roleObj.theRole.addUser(temp);
+            BotSpeak.plainSpeak(event, 
+                String.format("Added %s role to %s.", 
+                    roleObj.command,
+                    temp.getNickname(serv).orElse("[someone]")));
+        }
+    }
+
+    //handle reactions given an emoji and message
+
+    //handle anti-bot roles
     
     //uses the params to search for an exact match in the list of ReactObjects, null if no object found 
     private RoleObject checkForRoleReact(){ return null;}
