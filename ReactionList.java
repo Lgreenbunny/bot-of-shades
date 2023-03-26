@@ -15,7 +15,7 @@ public class ReactionList{
      * Uses ReactObjects (info from json) to save which messages have reaction roles, and which reactions control which roles
      * makes event handlers, based on ReactObjects, that give or take a role of the person clicking the reaction
      * 
-     * WHen a message's clicked:
+     * When a message's clicked:
      * event listener gets the user and message info and sends it to eventListenReacts()
      * ReactRole objects related to the message id AND reaction are found
      * based on the click/unclick, it adds/removes the role from the user    
@@ -25,9 +25,7 @@ public class ReactionList{
     //curent role's this bot can manage: Giveaway pkmn (pingable), Incense
     ReactionList(Server serv){
         this.serv = serv;
-        //read json in that one folder
-        //put target message and react info inside ReactObject classes
-        //add event listeners for reaction clicks
+        /*add event listeners for reaction messages with a json and RoleObjects later */
 
         //for now, we can just use a command to turn them on as a test, so only the ReactObject will be setup:
         /* get auction role by a server object
@@ -41,8 +39,7 @@ public class ReactionList{
     }
     
 
-    //makes one or more event listeners for the messages
-    //will be made private after the test command works
+    //makes event listeners, or responds to commands based on the message and commandCheck
     public void eventListReacts(MessageCreateEvent event, String commandCheck){
        MessageAuthor member = event.getMessageAuthor();
        
@@ -94,11 +91,8 @@ public class ReactionList{
     }
      
 
-    //handle plain text commands after looking for the text
+    //handle plain text commands involving role adding/removing
     private void plainRoleCommand(RoleObject roleObj, String commandCheck, User temp, MessageCreateEvent event){
-        //find a role that matches the command (through an arraylist of roles soon)
-        
-
         //add or remove that role
         if(roleObj.theRole.hasUser(temp)){
             roleObj.theRole.removeUser(temp);
@@ -116,10 +110,29 @@ public class ReactionList{
         }
     }
 
-    //handle reactions given an emoji and message
 
-    //handle anti-bot roles
+
+    //handle anti-bot roles/new user roles
+    /* one way: userRoleAddListener OR listen for any message button clicks (if it's able to see it)
+    * whenever the chosen event happens, remove their newUser role if they had it.
+    */
+
+
+    /* whenever this command's used by an ADMIN, find all the users without roles 
+     * and give them the newUser role 
+     * this isn't a gigantic server but when you get the 
+     * set of users, potentially convert it to a treeset with addAll, and implement the compareTo 
+     * also, try to ignore any role additions while this process is going on*/
+
+
+    /* whenever a new person joins the guild, immediately add the newUser role to them */
     
+
+    //handle reactions given an emoji and message
+    //to-do later
+
+
+
     //uses the params to search for an exact match in the list of ReactObjects, null if no object found 
     private RoleObject checkForRoleReact(){ return null;}
 
