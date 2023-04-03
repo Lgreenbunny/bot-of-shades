@@ -1,6 +1,9 @@
 package myfirstbot;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 import org.javacord.api.DiscordApi;
 import org.javacord.api.entity.channel.Channel;
@@ -12,6 +15,7 @@ import org.javacord.api.listener.message.MessageCreateListener;
 
 public class CommandBehavior implements MessageCreateListener{
 	ArrayList<Channel> listOfChannels;
+	ArrayList<String> tatsuCommand;
 	Channel general;
 	User actualBotUser;
 	DiscordApi api;
@@ -19,7 +23,7 @@ public class CommandBehavior implements MessageCreateListener{
 	ReactionList reactions;
 	MessageBuilder builder;
 	String[] commands;
-	CommandBehavior(ArrayList<Channel> list, User me){
+	CommandBehavior(ArrayList<Channel> list, User me) throws FileNotFoundException{
 		listOfChannels = list;
 		general = listOfChannels.get(0);
 		actualBotUser = me;
@@ -32,12 +36,20 @@ public class CommandBehavior implements MessageCreateListener{
 		"giveaway", "lets you get notified for auctions of some type :thonk:",
 		"incense", "lets you do incenses in that one channel without needing mod/admin",
 		"startMurders", "(:",
+		"wholesome", "very pure command, multiple responses",
 		"help/command[s]", "shows this whole message again"};
 		
 		reactions = new ReactionList(
 			list.get(0).asServerChannel()
 			.orElse(null).getServer()
 		);
+
+		tatsuCommand = new ArrayList<>();
+		//this will be loaded with a json at a later time
+		Scanner temp = new Scanner(new File("./aResource/theTatsuCommand.txt"));
+		while(temp.hasNextLine())
+			tatsuCommand.add(temp.nextLine());
+		temp.close();
 		
 	}
 	
@@ -91,6 +103,11 @@ public class CommandBehavior implements MessageCreateListener{
 				//builder.removeContent();
 			}
 
+			if(comCheck.matches("wholesome.*")){
+				BotSpeak.plainSpeak(event, 
+					tatsuCommand.get((int)(Math.random()*(tatsuCommand.size()-1)))
+					);
+			}
 			//check the other commands in ReactionList
 			reactions.eventListReacts(event, comCheck);
 		}
