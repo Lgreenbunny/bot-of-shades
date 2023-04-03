@@ -36,7 +36,6 @@ import java.util.ArrayList;
 import javax.json.Json;
 import javax.json.JsonReader;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader; 
 import java.util.Collection;
@@ -91,8 +90,8 @@ public class MainHub {
 	//messageBuilder can make messages, Messageable can receive messages...
 private static ArrayList<Channel> start(DiscordApi api){
 	//talk at first
-	MessageBuilder speech = new MessageBuilder();
-	speech.append("on?");
+	/*MessageBuilder speech = new MessageBuilder();
+	speech.append("hi");*/
 	
 	//get a channel by name, general atm
 	//do you have to convert from collection to arraylist each time?
@@ -103,7 +102,7 @@ private static ArrayList<Channel> start(DiscordApi api){
 	ArrayList<Channel> listA = new ArrayList<Channel>(list);
 	
 	//send message(arraylist of channels index 0, convert to textChannel, if there's a textChannel return value)
-	speech.send(listA.get(0).asTextChannel().get());
+	//speech.send(listA.get(0).asTextChannel().get());
 	
 	//normal execution in notes/discord, comment later
 	return listA;
