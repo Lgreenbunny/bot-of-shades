@@ -7,7 +7,6 @@ import org.javacord.api.entity.server.Server;
 import org.javacord.api.entity.user.User;
 import org.javacord.api.event.message.MessageCreateEvent;
 
-import java.util.ArrayList;
 
 public class ReactionList{
     /* In this class, it:

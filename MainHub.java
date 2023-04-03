@@ -45,7 +45,6 @@ import org.javacord.api.DiscordApiBuilder;
 import org.javacord.api.entity.channel.Channel;
 import org.javacord.api.entity.intent.Intent;
 //make messages
-import org.javacord.api.entity.message.MessageBuilder;
 import org.javacord.api.util.logging.FallbackLoggerConfiguration;
 
 
