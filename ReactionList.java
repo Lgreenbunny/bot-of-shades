@@ -19,7 +19,7 @@ public class ReactionList{
      * ReactRole objects related to the message id AND reaction are found
      * based on the click/unclick, it adds/removes the role from the user    
      */
-    protected RoleObject giveawayRole, incenseRole;
+    protected CommandRoleObject giveawayRole, incenseRole;
     protected Server serv;
     //curent role's this bot can manage: Giveaway pkmn (pingable), Incense
     ReactionList(Server serv){
@@ -31,10 +31,8 @@ public class ReactionList{
          * then find the Role by searching by name (getRolesByNameIgnoreCase)
          * use the role object to check if the user has said role (hasUser)
          */
-        giveawayRole = new RoleObject((serv.getRolesByNameIgnoreCase("giveaway pkmn")).get(0),
-            "giveaway");
-        incenseRole = new RoleObject((serv.getRolesByNameIgnoreCase("incense")).get(0),
-            "incense");
+        giveawayRole = new CommandRoleObject("giveaway pkmn", "giveaway");
+        incenseRole = new CommandRoleObject("incense","incense");
     }
     
 
@@ -91,17 +89,18 @@ public class ReactionList{
      
 
     //handle plain text commands involving role adding/removing
-    private void plainRoleCommand(RoleObject roleObj, String commandCheck, User temp, MessageCreateEvent event){
+    private void plainRoleCommand(CommandRoleObject roleObj, String commandCheck, User temp, MessageCreateEvent event){
         //add or remove that role
-        if(roleObj.theRole.hasUser(temp)){
-            roleObj.theRole.removeUser(temp);
+        Role tempRole = roleObj.getRoleObject(serv);
+        if(tempRole.hasUser(temp)){
+            tempRole.removeUser(temp);
             BotSpeak.plainSpeak(event, 
                 String.format("Removed %s role from %s.", 
                     roleObj.command,
                     temp.getNickname(serv).orElse("[someone]")));
         }
         else{
-            roleObj.theRole.addUser(temp);
+            tempRole.addUser(temp);
             BotSpeak.plainSpeak(event, 
                 String.format("Added %s role to %s.", 
                     roleObj.command,
@@ -132,13 +131,22 @@ public class ReactionList{
 
 
 
+
+
+
+
+/* ******************************
     //uses the params to search for an exact match in the list of ReactObjects, null if no object found 
-    private RoleObject checkForRoleReact(){ return null;}
+    private ReactRoleObject checkForRoleReact(){ return null;}
 
     //handles the clicks whenever an event listener picks up a click
     private void addRoleObject(){
     }
     private void removeRoleObject(){}
+**********************************/
+
+
+
 
 
     /*whenever a reaction's added or removed, check if the messageID matches any ReactObject ids
@@ -158,22 +166,80 @@ public class ReactionList{
     //deletes the json information related to the role
 }
 
-class RoleObject{
+class ReactRoleObject{
     //if this is a reaction role, command will be null, otherwise messageID and reactEmote will be null.
-    protected Message message; //which message this reaction is attached to
-    protected Emoji reactEmote; //which emote this role represents
-    protected Role theRole; //Role needs to be found from the list of roles in the given server
+    protected int messageID; //which message this reaction is attached to
+    protected String reactEmote; //which emote this role represents
+    protected String theRole; //Role needs to be found from the list of roles in the given server
     protected String command; //which command triggers this role change
-    RoleObject(Role theRole, String command){
-        this.theRole = theRole;
-        this.command = command;
-        reactEmote = null;
-        message = null;
-    }
-    RoleObject(Role theRole, Message message, Emoji reactEmote){
+    ReactRoleObject(String theRole, int message, String reactEmote){
         this.theRole = theRole;
         command = null;
         this.reactEmote = reactEmote;
-        this.message = message;
+        messageID = message;
+    }
+    //set & get methods here
+    public int getMessageID() {
+        return messageID;
+    }
+    public void setMessageID(int messageID) {
+        this.messageID = messageID;
+    }
+    public String getReactEmote() {
+        return reactEmote;
+    }
+    public void setReactEmote(String reactEmote) {
+        this.reactEmote = reactEmote;
+    }
+    public String getTheRole() {
+        return theRole;
+    }
+    public void setTheRole(String theRole) {
+        this.theRole = theRole;
+    }
+    public String getCommand() {
+        return command;
+    }
+    public void setCommand(String command) {
+        this.command = command;
+    }
+    
+    /* TBA
+    public Role getRoleObject(Server serv) {
+        return (serv.getRolesByNameIgnoreCase(theRole)).get(0);
+    }
+    public Message getMessageObject(Server serv) {
+        return ;
+    }
+    public Emoji getEmojiObject(Server serv) {
+        return ;
+    }*/
+
+} // only used with ReactionList
+
+
+class CommandRoleObject{
+    //if this is a reaction role, command will be null, otherwise messageID and reactEmote will be null.
+    protected String theRole; //Role needs to be found from the list of roles in the given server
+    protected String command; //which command triggers this role change
+    CommandRoleObject(String theRole, String command){
+        this.theRole = theRole;
+        this.command = command;
+    }
+    //set & get methods here
+    public String getRole() {
+        return theRole;
+    }
+    public Role getRoleObject(Server serv) {
+        return (serv.getRolesByNameIgnoreCase(theRole)).get(0);
+    }
+    public String getCommand() {
+        return command;
+    }
+    public void setRole(String theRole) {
+        this.theRole = theRole;
+    }
+    public void setCommand(String command) {
+        this.command = command;
     }
 } // only used with ReactionList
