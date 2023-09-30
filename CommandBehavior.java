@@ -12,9 +12,11 @@ import org.javacord.api.entity.channel.TextChannel;
 import org.javacord.api.entity.message.MessageBuilder;
 import org.javacord.api.entity.user.User;
 import org.javacord.api.event.message.MessageCreateEvent;
+import org.javacord.api.event.server.member.ServerMemberJoinEvent;
 import org.javacord.api.listener.message.MessageCreateListener;
+import org.javacord.api.listener.server.member.ServerMemberJoinListener;
 
-public class CommandBehavior implements MessageCreateListener{
+public class CommandBehavior implements MessageCreateListener, ServerMemberJoinListener{
 	ArrayList<Channel> listOfChannels;
 	ArrayList<String> tatsuCommand;
 	Channel general;
@@ -116,5 +118,17 @@ public class CommandBehavior implements MessageCreateListener{
 			//check the other commands in ReactionList
 			reactions.eventListReacts(event, comCheck);
 		}
+	}
+
+	//listenes then sends a greeting message whenever someone joins the server.
+	@Override
+	public void onServerMemberJoin(ServerMemberJoinEvent event) {
+		BotSpeak.plainSpeak(event, general, 
+			"<@" + event.getUser().getIdAsString() + ">```diff\r\n" + //
+					"- welcome to the guild~\r\n" + //
+					"+ make sure to check \r\n" + //
+					"``` #rules `(especially #17)`\r\n" + //
+					"`also put your info in/check ` #in-game-name `if you're joining one of our guildsssss` " + 
+					"<:LaffeyDrink:758407377518460928>");
 	}
 }
