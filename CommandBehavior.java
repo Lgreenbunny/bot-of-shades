@@ -2,6 +2,7 @@ package myfirstbot;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -39,10 +40,14 @@ public class CommandBehavior implements MessageCreateListener{
 		"wholesome", "very pure command, multiple responses",
 		"help/command[s]", "shows this whole message again"};
 		
-		reactions = new ReactionList(
-			list.get(0).asServerChannel()
-			.orElse(null).getServer()
-		);
+		try {
+			reactions = new ReactionList(
+				list.get(0).asServerChannel()
+				.orElse(null).getServer()
+			);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 
 		tatsuCommand = new ArrayList<>();
 		//this will be loaded with a json at a later time

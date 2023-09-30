@@ -1,11 +1,17 @@
 package myfirstbot;
-import org.javacord.api.entity.emoji.Emoji;
-import org.javacord.api.entity.message.Message;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.HashMap;
+
 import org.javacord.api.entity.message.MessageAuthor;
 import org.javacord.api.entity.permission.Role;
 import org.javacord.api.entity.server.Server;
 import org.javacord.api.entity.user.User;
 import org.javacord.api.event.message.MessageCreateEvent;
+import com.fasterxml.jackson.core.exc.StreamReadException;
+import com.fasterxml.jackson.databind.DatabindException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 public class ReactionList{
@@ -22,7 +28,7 @@ public class ReactionList{
     protected CommandRoleObject giveawayRole, incenseRole;
     protected Server serv;
     //curent role's this bot can manage: Giveaway pkmn (pingable), Incense
-    ReactionList(Server serv){
+    ReactionList(Server serv) throws StreamReadException, DatabindException, IOException{
         this.serv = serv;
         /*add event listeners for reaction messages with a json and RoleObjects later */
 
@@ -31,8 +37,9 @@ public class ReactionList{
          * then find the Role by searching by name (getRolesByNameIgnoreCase)
          * use the role object to check if the user has said role (hasUser)
          */
-        giveawayRole = new CommandRoleObject("giveaway pkmn", "giveaway");
-        incenseRole = new CommandRoleObject("incense","incense");
+        HashMap<String, String> commands = jsonSetupCommandRole();
+        giveawayRole = new CommandRoleObject(commands.get("giveaway"), "giveaway");
+        incenseRole = new CommandRoleObject(commands.get("incense"),"incense");
     }
     
 
@@ -52,8 +59,6 @@ public class ReactionList{
         /*Role.addUser(user), 
         Role.hasUser(user)
         can use .getName() to get the role name if needed
-
-
         
         MessageCreateListener is used in CommandBehavior, which handles the test command for this
         so it'll send the user (getMessageAuthor()) from MessageCreateEvent for a user & role test:
@@ -107,7 +112,18 @@ public class ReactionList{
                     temp.getNickname(serv).orElse("[someone]")));
         }
     }
+    
+    //
+    private HashMap<String, String> jsonSetupCommandRole() throws StreamReadException, DatabindException, IOException{
+        //used for putting the entire string in the class later on
+        ObjectMapper objMap = new ObjectMapper();
+        //used to get all the data from the file all at once
+        byte[] temp = Files.readAllBytes(Paths.get("./aResource/commandRole.json"));
 
+        return objMap.readValue(temp, HashMap.class); // there's no HashMap<String, String> class
+    }
+    //edit json values and apply to file
+    //remove json values and apply to file
 
 
     //handle anti-bot roles/new user roles
@@ -203,7 +219,7 @@ class ReactRoleObject{
     public void setCommand(String command) {
         this.command = command;
     }
-    
+
     /* TBA
     public Role getRoleObject(Server serv) {
         return (serv.getRolesByNameIgnoreCase(theRole)).get(0);
@@ -216,7 +232,6 @@ class ReactRoleObject{
     }*/
 
 } // only used with ReactionList
-
 
 class CommandRoleObject{
     //if this is a reaction role, command will be null, otherwise messageID and reactEmote will be null.
